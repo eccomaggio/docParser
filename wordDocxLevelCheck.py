@@ -50,6 +50,7 @@ https://realpython.com/nltk-nlp-python/
 http://www.nltk.org/book/
 """
 
+import sys
 from collections import namedtuple
 import os
 import zipfile
@@ -195,7 +196,7 @@ def make_substitutions(paragraph):
         "ma'am": "ma_am",
         "p\.m\.": "P_M",
         # "pm": "P_M",
-        "mrs.": "Mrs",
+        "mrs\.": "Mrs",
         # "mrs": "Mrs",
         "mr\.": "Mr",
         # "mr": "Mr",
@@ -271,13 +272,40 @@ def output_docx(all_paragraphs, filename):
     out.save(filename)
 
 
+
+
+#### MAIN program ##############################################
+
+def main():
+    raw_text = scrape_p_elements(doc_xml)
+    final_text = process_text(raw_text)
+
+    output_docx(final_text, homeDir + doc_name + ".checked" + doc_suffix)
+
+    debug = True
+    for i, para in enumerate(raw_text):
+        if debug:
+            if i < 12:
+                print(f"orig: {para}\n\n>>>>> {final_text[i]}\n\n")
+            else:
+                break
+    else:
+        print(para)
+
+
 #### initialize global variables  ##############################################
 
 ## https://www.codegrepper.com/code-examples/python/get+current+file+name+python
 homeDir = os.path.dirname(os.path.realpath(__file__)) + "/"
-doc_name = "sample.GEPT.withTables"
+doc_name = "sample.withTables"
 doc_suffix = ".docx"
-docFile = doc_name + doc_suffix
+try:
+    doc_name = str(sys.argv[1])
+except IndexError:
+    pass
+print ( doc_name )
+if doc_name[-5::] == ".docx":
+    doc_name = doc_name[:-5]
 
 lemmatizer = nltk.stem.WordNetLemmatizer()
 GEPT_lookup = create_GEPT_lookup(homeDir + "GEPTwordlist.csv")
@@ -285,23 +313,10 @@ GEPT_lookup = create_GEPT_lookup(homeDir + "GEPTwordlist.csv")
 hide_spaces = {" ": "<"}
 reveal_spaces = {"<": " "}
 
-zipped_doc = zipfile.ZipFile(homeDir + docFile)
+zipped_doc = zipfile.ZipFile(homeDir + doc_name + doc_suffix)
 doc_xml = xml.dom.minidom.parseString(zipped_doc.read("word/document.xml"))
 
-
-#### MAIN program ##############################################
-
-raw_text = scrape_p_elements(doc_xml)
-final_text = process_text(raw_text)
-
-output_docx(final_text, homeDir + doc_name + ".markedup" + doc_suffix)
-
-debug = True
-for i, para in enumerate(raw_text):
-    if debug:
-        if i < 12:
-            print(f"orig: {para}\n\n>>>>> {final_text[i]}\n\n")
-        else:
-            break
-    else:
-        print(para)
+if __name__ == '__main__':
+    # print(str(sys.argv[1]))
+    # exit()
+    main()
