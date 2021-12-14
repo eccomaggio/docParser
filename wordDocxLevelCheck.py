@@ -275,7 +275,7 @@ def output_docx(all_paragraphs, filename):
 
 ## https://www.codegrepper.com/code-examples/python/get+current+file+name+python
 homeDir = os.path.dirname(os.path.realpath(__file__)) + "/"
-doc_name = "sample.GEPT.withTables"
+doc_name = "sample.withTables"
 doc_suffix = ".docx"
 docFile = doc_name + doc_suffix
 
