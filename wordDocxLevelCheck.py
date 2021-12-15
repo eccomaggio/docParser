@@ -30,6 +30,9 @@ parses EVERYTHING in a document (well, that might not be true: i haven't tested 
 2) words with double entries in the GEPT wordlist (e.g. long verb + long adj.): 
 only the second entry will be compared
 
+3) it mucks up the layout because the lemmatizer needs full sentences, but 
+the docx text is divided into runs (e.g. to show line breaks, etc.)
+
 
 # USEFUL RESOURCES:
 
